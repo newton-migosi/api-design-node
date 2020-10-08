@@ -20,6 +20,9 @@ var id = 0;
 
 var updateId = function(req, res, next) {
   // fill this out. this is the route middleware for the ids
+  req.body.id = id.toString();
+  id++;
+  next();
 };
 
 app.use(morgan('dev'))
@@ -31,6 +34,9 @@ app.use(bodyParser.json());
 app.param('id', function(req, res, next, id) {
   // fill this out to find the lion based off the id
   // and attach it to req.lion. Rember to call next()
+  const lion = lions.find(lion => lion.id === id);
+  req.lion = lion;
+  next();
 });
 
 app.get('/lions', function(req, res){
@@ -39,7 +45,7 @@ app.get('/lions', function(req, res){
 
 app.get('/lions/:id', function(req, res){
   // use req.lion
-  res.json(lion || {});
+  res.json(req.lion || {});
 });
 
 app.post('/lions', updateId, function(req, res) {
@@ -65,6 +71,12 @@ app.put('/lions/:id', function(req, res) {
     res.json(updatedLion);
   }
 });
+
+app.use(function(err,req,res,next){
+    if (err) {
+        res.status(500).send(err);
+    }
+})
 
 app.listen(3000);
 console.log('on port 3000');
