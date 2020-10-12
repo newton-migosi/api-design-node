@@ -3,10 +3,24 @@ var _ = require('lodash');
 
 exports.params = function(req, res, next, id) {
   // use the id and attach the category to req
+  Category.findById(id, function(err, category) {
+    if (err) {
+      next(err);
+    } else {
+      req.category = category;
+      next();
+    }
+  })
 };
 
 exports.get = function(req, res, next) {
-
+  Category.find({}, function(err, categories) {
+    if (err) {
+      next(err);
+    } else {
+      res.json(categories);
+    }
+  })
 };
 
 exports.getOne = function(req, res, next) {

@@ -26,6 +26,7 @@ exports.get = function(req, res, next) {
 
 exports.getOne = function(req, res, next) {
   // fix me
+  res.json(req.user);
 };
 
 exports.put = function(req, res, next) {
