@@ -3,6 +3,8 @@ var _ = require('lodash');
 
 exports.params = function(req, res, next, id) {
   Post.findById(id)
+    .populate('author categories')
+    .exec()
     .then(function(post) {
       if (!post) {
         next(new Error('No post with that id'));
@@ -17,13 +19,13 @@ exports.params = function(req, res, next, id) {
 
 exports.get = function(req, res, next) {
   // need to populate here
-  const post_promise = req.post.populate('author categories').exec();
-
-  post_promise.then(function(post) {
-    res.json(post);
-  }, function(err) {
-    next(err);
-  })
+  Post.find({})
+    .populate('author categories')
+    .exec()
+    .then(
+      post => res.json(post),
+      err => next(err)
+    );
 };
 
 exports.getOne = function(req, res, next) {
